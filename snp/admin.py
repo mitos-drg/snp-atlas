@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Animal, Chromosome
+from .models import Animal, Chromosome, SNP
 
 
 class ChromosomeInline(admin.TabularInline):
@@ -27,9 +27,7 @@ class SNPInline(admin.TabularInline):
 @admin.register(Chromosome)
 class ChromosomeAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Species", {"fields": ["name", "latin_name", "chromosome_count"]}),
-        ("Presentation", {"fields": ["image"], "classes": ["collapse"]}),
+        (None, {"fields": ["animal", "number"]}),
     ]
-    inlines = [ChromosomeInline]
-    list_display = ["name", "latin_name"]
-    search_fields = ["name", "latin_name"]
+    inlines = [SNPInline]
+    list_display = ["animal"]

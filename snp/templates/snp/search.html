@@ -37,30 +37,12 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-6 col-sm-4 col-lg-2 text-center">
-                                <img src="..." alt="Species name image" class="img-fluid rounded placeholder w-100" width="200" height="200">
-                                <p class="text-secondary text-center mt-2">Species name</p>
-                            </div>
-                            <div class="col-6 col-sm-4 col-lg-2 text-center">
-                                <img src="..." alt="Species name image" class="img-fluid rounded placeholder w-100" width="200" height="200">
-                                <p class="text-secondary text-center mt-2">Species name</p>
-                            </div>
-                            <div class="col-6 col-sm-4 col-lg-2 text-center">
-                                <img src="..." alt="Species name image" class="img-fluid rounded placeholder w-100" width="200" height="200">
-                                <p class="text-secondary text-center mt-2">Species name</p>
-                            </div>
-                            <div class="col-6 col-sm-4 col-lg-2 text-center">
-                                <img src="..." alt="Species name image" class="img-fluid rounded placeholder w-100" width="200" height="200">
-                                <p class="text-secondary text-center mt-2">Species name</p>
-                            </div>
-                            <div class="col-6 col-sm-4 col-lg-2 text-center">
-                                <img src="..." alt="Species name image" class="img-fluid rounded placeholder w-100" width="200" height="200">
-                                <p class="text-secondary text-center mt-2">Species name</p>
-                            </div>
-                            <div class="col-6 col-sm-4 col-lg-2 text-center">
-                                <img src="..." alt="Species name image" class="img-fluid rounded placeholder w-100" width="200" height="200">
-                                <p class="text-secondary text-center mt-2">Species name</p>
-                            </div>
+                            {% for animal in animals %}
+                                <div class="col-6 col-sm-4 col-lg-2 text-center">
+                                    <img src="{{ animal.image }}" alt="{{ animal.name }}'s image" class="img-fluid rounded w-100" width="200" height="200">
+                                    <p class="text-secondary text-center mt-2">{{ animal.name }} ({{ animal.latin_name }})</p>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -73,12 +55,15 @@
                         SNP search
                     </div>
                     <div class="card-body">
-                        <form class="">
+                        <form class="" action="/snp/search/" method="post">
+                            {% csrf_token %}
+                            {{ form.animal }}
                             <div class="row mb-3">
-                              <label for="region" class="col-sm-2 col-form-label">Region</label>
+                              <label for="{{ form.region.id_for_label }}" class="col-sm-2 col-form-label">Region</label>
                               <div class="col-sm-10 col-md-4">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Input coordinates" id="region">
+                                    <!--<input type="text" class="form-control" placeholder="Input coordinates" id="region">-->
+                                    {{ form.region }}
                                     <button class="btn btn-secondary"><i class="bi bi-zoom-in"></i></button>
                                     <button class="btn btn-secondary"><i class="bi bi-zoom-out"></i></button>
                                 </div>
@@ -89,13 +74,15 @@
                                 <div class="col-sm-10 col-md-4">
                                     <div class="input-group">
                                         <span class="input-group-text">Min. value</i></span>
-                                        <input type="text" class="form-control"id="min">
+                                        <!-- <input type="text" class="form-control"id="min"> -->
+                                        {{ form.maf_min }}
                                         <span class="input-group-text">Max. value</span>
-                                        <input type="text" class="form-control"id="max">
+                                        <!-- <input type="text" class="form-control"id="max"> -->
+                                        {{ form.maf_max }}
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="search" class="btn btn-primary">Submit</button>
                           </form>
                     </div>
                 </div>
