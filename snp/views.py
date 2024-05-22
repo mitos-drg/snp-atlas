@@ -8,6 +8,7 @@ from django.views import generic
 from .forms import SNPForm
 from .models import Animal, SNP
 
+
 def index(request):
     species = Animal.objects.all().count()
     snps = SNP.objects.all().count()
@@ -16,7 +17,7 @@ def index(request):
         "snp/index.html",
         {
             "species": species,
-            "snps": snps, 
+            "snps": snps,
         }
     )
 
@@ -32,24 +33,31 @@ def search(request):
             animal = get_object_or_404(Animal, pk=animal_id)
 
             region_str = form.cleaned_data["region"]
-            chromosome, rangestr = region_str.split(':')
-            range_min, range_max = rangestr.split('-')
+            chromosome, range_str = region_str.split(':')
+            range_min, range_max = range_str.split('-')
 
-            chromosome = int(chromosome)
             range_min = int(range_min)
             range_max = int(range_max)
 
             maf_min = form.cleaned_data["maf_min"]
             maf_max = form.cleaned_data["maf_max"]
 
-            snps = SNP.objects.filter(
-                chromosome__animal=animal,
-                chromosome__number=chromosome,
-                maf__gte=maf_min, maf__lte=maf_max
-            )
+            if chromosome.isnumeric():
+                chromosome = int(chromosome)
+                snps = SNP.objects.filter(
+                    chromosome__animal=animal,
+                    chromosome__number=chromosome,
+                    position__gte=range_min, position__lte=range_max,
+                    maf__gte=maf_min, maf__lte=maf_max
+                )
+            else:
+                snps = SNP.objects.filter(
+                    chromosome__animal=animal,
+                    position__gte=range_min, position__lte=range_max,
+                    maf__gte=maf_min, maf__lte=maf_max
+                )
     else:
         form = SNPForm()
-    
 
     return render(
         request,
