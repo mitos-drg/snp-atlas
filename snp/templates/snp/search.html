@@ -1,154 +1,141 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SNP Atlas | Search</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-        rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
-        crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg bg-primary">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="index.html">SNP Atlas</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/snp/">SNP Atlas</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav"
+                aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="main-nav">
+        </button>
+        <div class="collapse navbar-collapse" id="main-nav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="search.html">SNPs</a>
-              </li>
-          </div>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/snp/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/snp/search/">SNPs</a>
+                </li>
         </div>
-      </nav>
+    </div>
+</nav>
 
-      <main class="container">
-        <div class="row my-3">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header bg-primary">
-                        Select species
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            {% for animal in animals %}
-                                <div class="col-6 col-sm-4 col-lg-2 text-center">
-                                    <img src="{{ animal.image }}" alt="{{ animal.name }}'s image" class="img-fluid rounded w-100" width="200" height="200">
-                                    <p class="text-secondary text-center mt-2">{{ animal.name }} ({{ animal.latin_name }})</p>
-                                </div>
-                            {% endfor %}
-                        </div>
+<main class="container">
+    <div class="row my-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-primary">
+                    Select species
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for animal in animals %}
+                            <div class="col-6 col-sm-4 col-lg-2 text-center" data-animal="{{ animal.id }}">
+                                <img src="{{ animal.image.url }}" alt="{{ animal.name }}'s image"
+                                     class="img-fluid rounded w-100" width="200" height="200">
+                                <p class="text-secondary text-center mt-2">{{ animal.name }}
+                                    ({{ animal.latin_name }})</p>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row my-3">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header bg-primary">
-                        SNP search
-                    </div>
-                    <div class="card-body">
-                        <form class="" action="/snp/search/" method="post">
-                            {% csrf_token %}
-                            {{ form.animal }}
-                            <div class="row mb-3">
-                              <label for="{{ form.region.id_for_label }}" class="col-sm-2 col-form-label">Region</label>
-                              <div class="col-sm-10 col-md-4">
+    </div>
+    <div class="row my-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-primary">
+                    SNP search
+                </div>
+                <div class="card-body">
+                    <form class="" action="/snp/search/" method="post">
+                        {% csrf_token %}
+                        {{ form.animal }}
+                        <div class="row mb-3">
+                            <label for="{{ form.region.id_for_label }}" class="col-sm-2 col-form-label">Region</label>
+                            <div class="col-sm-10 col-md-4">
                                 <div class="input-group">
                                     <!--<input type="text" class="form-control" placeholder="Input coordinates" id="region">-->
                                     {{ form.region }}
                                     <button class="btn btn-secondary"><i class="bi bi-zoom-in"></i></button>
                                     <button class="btn btn-secondary"><i class="bi bi-zoom-out"></i></button>
                                 </div>
-                              </div>
                             </div>
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">MAF</label>
-                                <div class="col-sm-10 col-md-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Min. value</i></span>
-                                        <!-- <input type="text" class="form-control"id="min"> -->
-                                        {{ form.maf_min }}
-                                        <span class="input-group-text">Max. value</span>
-                                        <!-- <input type="text" class="form-control"id="max"> -->
-                                        {{ form.maf_max }}
-                                    </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">MAF</label>
+                            <div class="col-sm-10 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text">Min. value</i></span>
+                                    <!-- <input type="text" class="form-control"id="min"> -->
+                                    {{ form.maf_min }}
+                                    <span class="input-group-text">Max. value</span>
+                                    <!-- <input type="text" class="form-control"id="max"> -->
+                                    {{ form.maf_max }}
                                 </div>
                             </div>
-                            <button type="search" class="btn btn-primary">Submit</button>
-                          </form>
-                    </div>
+                        </div>
+                        <button type="search" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="row justify-content-between">
-            <div class="col col-sm-2 btn-group">
-                <button type="button" class="btn btn-outline-secondary text-primary">«</button>
-                <button type="button" class="btn btn-outline-secondary text-primary">1</button>
-                <button type="button" class="btn btn-outline-secondary text-primary">2</button>
-                <button type="button" class="btn btn-outline-secondary text-primary">3</button>
-                <button type="button" class="btn btn-outline-secondary text-primary">»</button>
-            </div>
-            <div class="col col-sm-2 text-end">
-                <button type="button" class="btn btn-primary">Download</button>
-            </div>
+    </div>
+    <div class="row justify-content-between">
+        <div class="col col-sm-2 btn-group">
+            <button type="button" class="btn btn-outline-secondary text-primary">«</button>
+            <button type="button" class="btn btn-outline-secondary text-primary">1</button>
+            <button type="button" class="btn btn-outline-secondary text-primary">2</button>
+            <button type="button" class="btn btn-outline-secondary text-primary">3</button>
+            <button type="button" class="btn btn-outline-secondary text-primary">»</button>
         </div>
-        <div class="row my-3">
-            <table class="table table-bordered table-striped align-middle">
-                <thead>
-                  <tr class="text-center">
-                    <th scope="col">Chromosome</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">REF Allele</th>
-                    <th scope="col">ALT Allele</th>
-                    <th scope="col">MAF</th>
-                    <th scope="col">Annotation</th>
-                    <th scope="col">Browser</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>123</td>
-                    <td class="text-center">A</td>
-                    <td class="text-center">T</td>
-                    <td>0.34</td>
-                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Details</a></td>
-                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Show in browser</a></td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>567</td>
-                    <td class="text-center">T</td>
-                    <td class="text-center">G</td>
-                    <td>0.01</td>
-                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Details</a></td>
-                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Show in browser</a></td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>890</td>
-                    <td class="text-center">G</td>
-                    <td class="text-center">A</td>
-                    <td>0.21</td>
-                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Details</a></td>
-                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Show in browser</a></td>
-                  </tr>
-                </tbody>
-              </table>
+        <div class="col col-sm-2 text-end">
+            <button type="button" class="btn btn-primary">Download</button>
         </div>
-      </main>
+    </div>
+    <div class="row my-3">
+        <table class="table table-bordered table-striped align-middle">
+            <thead>
+            <tr class="text-center">
+                <th scope="col">Chromosome</th>
+                <th scope="col">Position</th>
+                <th scope="col">REF Allele</th>
+                <th scope="col">ALT Allele</th>
+                <th scope="col">MAF</th>
+                <th scope="col">Annotation</th>
+                <th scope="col">Browser</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for snp in snps %}
+                <tr>
+                    <td>{{ snp.chromosome.number }}</td>
+                    <td>{{ snp.position }}</td>
+                    <td class="text-center">{{ snp.ref_allele }}</td>
+                    <td class="text-center">{{ snp.alt_allele }}</td>
+                    <td>{{ snp.maf }}</td>
+                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Details</a></td>
+                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Show in browser</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>
