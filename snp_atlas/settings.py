@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -123,3 +124,11 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Base url to serve media files
+MEDIA_URL = "/media/"
+
+BASE_URL = os.getenv('BASE_URL', 'http://127.0.0.1:8000')
+
+# Path where media is stored
+MEDIA_ROOT = os.path.join(os.getenv("DJ_STATIC_PATH", BASE_DIR), "media")

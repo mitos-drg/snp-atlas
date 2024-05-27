@@ -15,7 +15,10 @@ class Animal(models.Model):
     name = models.CharField(max_length=128)
     latin_name = models.CharField(max_length=256)
     chromosome_count = models.IntegerField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to='images/', default=None, blank=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.latin_name})"
 
 
 class Chromosome(models.Model):

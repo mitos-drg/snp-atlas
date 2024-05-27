@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Animal, Chromosome, SNP
+from .models import Animal, Chromosome, SNP, Annotation
 
 
 class ChromosomeInline(admin.TabularInline):
@@ -30,4 +30,7 @@ class ChromosomeAdmin(admin.ModelAdmin):
         (None, {"fields": ["animal", "number"]}),
     ]
     inlines = [SNPInline]
-    list_display = ["animal"]
+    list_display = ["animal", "number"]
+
+
+admin.site.register(Annotation)

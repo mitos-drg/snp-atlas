@@ -1,36 +1,6 @@
-<!doctype html>
-<html lang="en" data-bs-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SNP Atlas | Search</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</head>
-<body>
-<nav class="navbar navbar-expand-lg bg-primary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/snp/">SNP Atlas</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav"
-                aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="main-nav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/snp/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/snp/search/">SNPs</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+{% extends "snp/base.html" %}
 
-<main class="container">
+{% block content %}
     <div class="row my-3">
         <div class="col">
             <div class="card">
@@ -42,7 +12,7 @@
                         {% for animal in animals %}
                             <div class="col-6 col-sm-4 col-lg-2 text-center rounded" data-animal="{{ animal.id }}">
                                 <img src="{{ animal.image.url }}" alt="{{ animal.name }}'s image"
-                                     class="img-fluid rounded w-100" width="200" height="200">
+                                    class="img-fluid rounded w-100" width="200" height="200">
                                 <p class="text-secondary text-center mt-2">{{ animal.name }}
                                     ({{ animal.latin_name }})</p>
                             </div>
@@ -125,76 +95,71 @@
                     <td class="text-center">{{ snp.ref_allele }}</td>
                     <td class="text-center">{{ snp.alt_allele }}</td>
                     <td>{{ snp.maf }}</td>
-                    <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Details</a></td>
+                    <td class="text-center"><a href="/snp/{{ snp.id }}" class="btn btn-primary btn-sm">Details</a></td>
                     <td class="text-center"><a href="#" class="btn btn-primary btn-sm">Show in browser</a></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
-</main>
+{% endblock %}
+{% block scripts %}
+    <script>
+        // Remember id of currently selected animal
+        let animalId = {{ animal_id }};
+        let animalElement = null;
 
+        function ChangeAnimal() {
+            animalElement?.classList.remove("border", "border-primary", "border-2");
+            animalId = this.dataset.animal;
+            document.getElementById("id_animal").value = animalId;
+            animalElement = this;
+            animalElement.classList.add("border", "border-primary", "border-2");
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-<script>
-    // Remember id of currently selected animal
-    let animalId = {{ animal_id }};
-    let animalElement = null;
+        function ZoomRangeOut() {
+            let input = document.getElementById("id_region");
+            let istr = input.value.split(':');
+            let rstr = istr[1].split('-');
+            let rangeMin = parseInt(rstr[0]);
+            let rangeMax = parseInt(rstr[1]);
+            let len = Math.floor((rangeMax - rangeMin) / 2);
+            rangeMin -= len;
+            rangeMin = Math.max(0, rangeMin);
+            rangeMax += len;
+            
+            input.value = istr[0] + ':' + rangeMin.toString() + '-' + rangeMax.toString();
+        }
 
-    function ChangeAnimal() {
-        animalElement?.classList.remove("border", "border-primary", "border-2");
-        animalId = this.dataset.animal;
-        document.getElementById("id_animal").value = animalId;
-        animalElement = this;
-        animalElement.classList.add("border", "border-primary", "border-2");
-    }
+        function ZoomRangeIn() {
+            let input = document.getElementById("id_region");
+            let istr = input.value.split(':');
+            let rstr = istr[1].split('-');
+            let rangeMin = parseInt(rstr[0]);
+            let rangeMax = parseInt(rstr[1]);
+            let len = Math.floor((rangeMax - rangeMin) / 4);
+            rangeMin += len;
+            rangeMin = Math.max(0, rangeMin);
+            rangeMax -= len;
 
-    function ZoomRangeOut() {
-        let input = document.getElementById("id_region");
-        let istr = input.value.split(':');
-        let rstr = istr[1].split('-');
-        let rangeMin = parseInt(rstr[0]);
-        let rangeMax = parseInt(rstr[1]);
-        let len = Math.floor((rangeMax - rangeMin) / 2);
-        rangeMin -= len;
-        rangeMin = Math.max(0, rangeMin);
-        rangeMax += len;
+            input.value = istr[0] + ':' + rangeMin.toString() + '-' + rangeMax.toString();
+        }
         
-        input.value = istr[0] + ':' + rangeMin.toString() + '-' + rangeMax.toString();
-    }
+        // Add click listeners to all animals
+        window.onload = function (){
+            // iterate over all animals' divs
+            let animals = document.querySelectorAll("[data-animal]");
+            animals.forEach(function (animal, id) {
+                // add on click listener
+                animal.addEventListener("click", ChangeAnimal);
 
-    function ZoomRangeIn() {
-        let input = document.getElementById("id_region");
-        let istr = input.value.split(':');
-        let rstr = istr[1].split('-');
-        let rangeMin = parseInt(rstr[0]);
-        let rangeMax = parseInt(rstr[1]);
-        let len = Math.floor((rangeMax - rangeMin) / 4);
-        rangeMin += len;
-        rangeMin = Math.max(0, rangeMin);
-        rangeMax -= len;
+                // Set current animal
+                if (parseInt(animal.dataset.animal) === animalId) {
+                    animalElement = animal;
+                    animalElement.classList.add("border", "border-primary", "border-2");
+                }
+            });
+        };
 
-        input.value = istr[0] + ':' + rangeMin.toString() + '-' + rangeMax.toString();
-    }
-    
-    // Add click listeners to all animals
-    window.onload = function (){
-        // iterate over all animals' divs
-        let animals = document.querySelectorAll("[data-animal]");
-        animals.forEach(function (animal, id) {
-            // add on click listener
-            animal.addEventListener("click", ChangeAnimal);
-
-            // Set current animal
-            if (parseInt(animal.dataset.animal) === animalId) {
-                animalElement = animal;
-                animalElement.classList.add("border", "border-primary", "border-2");
-            }
-        });
-    };
-
-</script>
-</body>
-</html>
+    </script>
+{% endblock %}

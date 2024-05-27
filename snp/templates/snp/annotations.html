@@ -1,0 +1,25 @@
+{% extends "snp/base.html" %}
+
+{% block content %}
+    <div class="row my-3">
+        {% for ann in annotations %}
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-primary">
+                    Welcome to SNP Atlas
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis bibendum libero in metus tincidunt,
+                        id sagittis nibh ultricies. Morbi vulputate lacus sed ex aliquet, nec dictum arcu aliquet. 
+                        Aenean at est a quam suscipit dignissim. Sed mattis, mauris at scelerisque laoreet, erat urna varius nisl, 
+                        sed sagittis neque tortor nec mi. Praesent volutpat, enim convallis congue ultrices, turpis purus maximus sem, 
+                        nec ornare neque ante non sapien. Quisque a odio fermentum, luctus nunc et, mattis ipsum. 
+                        Vivamus hendrerit metus id ante viverra, et pretium lorem dapibus. 
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

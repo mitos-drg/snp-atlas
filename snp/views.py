@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.views import generic
 
 from .forms import SNPForm
-from .models import Animal, SNP
+from .models import Animal, SNP, Annotation
 
 
 def index(request):
@@ -67,5 +67,16 @@ def search(request):
             "animals": animals,
             "form": form,
             "snps": snps,
+        }
+    )
+
+
+def annotations(request, snp_id):
+    annotations = Annotation.objects.filter(snp=SNP.objects.get(pk=snp_id))
+    return render(
+        request,
+        "snp/annotations.html",
+        {
+            "annotations": annotations
         }
     )
